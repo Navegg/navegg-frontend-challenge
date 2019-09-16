@@ -1,6 +1,6 @@
 # Navegg Frontend Challenge - Create a Tree List
 
-Many web applications use lists for data reporting. One well-used format is the Tree List. Your test is to recreate a short version of a Tree List with the following specifications:
+Many web applications use lists for data reporting. One well-used format is the **Tree List**. Your test is to recreate a short version of a Tree List with the following specifications:
   
 
 ## Briefing

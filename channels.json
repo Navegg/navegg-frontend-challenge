@@ -63,4 +63,44 @@
 		"id": 8,
 		"name": "About Navegg"
 	}
+	{
+		"status": "Active",
+		"users": 3.115,
+		"parent": 3,
+		"percent": 17.65,
+		"id": 9,
+		"name": "Solutuins for sites, blogs and e-commerces"
+	}
+	{
+		"status": "Active",
+		"users": 4.715,
+		"parent": 3,
+		"percent": 22.65,
+		"id": 10,
+		"name": "Institutional (About, FAQ and Contact)"
+	}
+	{
+		"status": "Active",
+		"users": 1.115,
+		"parent": 3,
+		"percent": 19.15,
+		"id": 11,
+		"name": "Navegg Segments"
+	}
+	{
+		"status": "Active",
+		"users": 3.115,
+		"parent": 11,
+		"percent": 17.65,
+		"id": 12,
+		"name": "Partners"
+	}
+	{
+		"status": "Active",
+		"users": 2.794,
+		"parent": 11,
+		"percent": 16.64,
+		"id": 13,
+		"name": "Segments tree"
+	}
 ]
