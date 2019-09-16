@@ -1,6 +1,4 @@
-# navegg-frontend-challenge
-
-# Create a Tree List
+# Navegg Frontend Challenge - Create a Tree List
 
 Many web applications use lists for data reporting. One well-used format is the Tree List. Your test is to recreate a short version of a Tree List with the following specifications:
   
@@ -13,7 +11,7 @@ The application must-have features to create/edit an item, filling in the name a
 
 The Tree List needs to be updated after each change.  
 
-We created an example to show you how a tree list looks like. But remember, you won’t be evaluated by the look of the layout, so feel free to find the best way to you, as long as you follow what is in the instructions above.
+We created an example to show you how a tree list looks like. But remember, **you won’t be evaluated by the look of the layout**, so feel free to find the best way to you, as long as you follow what is in the instructions above.
 
 ![Tree list](tree-list.png)
 
