@@ -74,7 +74,9 @@ We use AngularJs internally, so using this framework in your application is a pl
 
 Please submit your solution as a pull request to this repository or email a zip directly to challenge@navegg.com, and include in it:
 
--   a link to your working example (or instructions to run locally)
+-   your project source code 
+
+-   a link to your work done (we recommend [GitHub Page](https://pages.github.com/)) or instructions to run locally
     
 -   how long it took for you to get it done
     
