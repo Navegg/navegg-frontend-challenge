@@ -2,17 +2,19 @@ let treeViewObject;
 let currentId;
 let editId = null;
 
-function loadJSON() {
+// Load json file in localhost
+function loadJSON(file_name) {
     return new Promise((resolve, reject) => {
-        $.getJSON("http://localhost:8000/channels.json", json => {
+        $.getJSON("http://localhost:8000/" + file_name, json => {
             resolve(json);
         }); 
     });
 }
 
+// Initialize code
 async function init() {
     try {
-        treeViewObject = await loadJSON();
+        treeViewObject = await loadJSON("channels.json");
         currentId = treeViewObject.length + 1;
         generateTreeView();
         updateParentList();
@@ -21,6 +23,7 @@ async function init() {
     }
 }
 
+// Generate a HTML code for a new item in the tree view
 function generateListItem(treeViewItem) {
     innerHtml = "<div class=\"item\" id=\"parent_" + treeViewItem.id + "\">";
     innerHtml += "<i class=\"minus square outline icon\" id=\"icon_click\"></i>";
@@ -37,6 +40,7 @@ function generateListItem(treeViewItem) {
     return innerHtml;
 }
 
+// Clear the current tree view and generate a new one
 function generateTreeView() {
     $("#root").html("<div class=\"ui relaxed divided list\" id=\"treeview\"></div>")
     for (index in treeViewObject) {
@@ -49,12 +53,14 @@ function generateTreeView() {
     }
 }
 
+// Remove item in the array with the ID
 function itemRemove(array, element) {
     return array.filter(function(ele) {
         return ele.id != element;
     });
 }
 
+// Update the list of options of available parents
 function updateParentList() {
     $("#parent_list").html("<option value=\"\"></option>");
     for (index in treeViewObject) {
@@ -62,6 +68,7 @@ function updateParentList() {
     }
 }
 
+// Remove all children related to the parent with id = itemId
 function removeChildren(itemId) {
     let parentList = [];
     parentList.push(itemId);
@@ -81,6 +88,7 @@ function removeChildren(itemId) {
     }
 }
 
+// Clear the field of modal fields
 function clearModalFields() {
     name = $("#name_field").val("");
     users = $("#users_field").val("");
@@ -88,7 +96,8 @@ function clearModalFields() {
     parent = $("#parent_list").val("");
 }
 
-function findItem(idSearch) {
+// Find index for the tree view item with id
+function findItemIndex(idSearch) {
     for (index in treeViewObject) {
         if (parseInt(treeViewObject[index].id) === parseInt(idSearch)) {
             return index;
@@ -97,6 +106,7 @@ function findItem(idSearch) {
     return null;
 }
 
+// Validade the fields to create/update a new item
 function validateItem(name, users, percent) {
     if (name === "") {
         alert("Name cannot be empty");
@@ -150,6 +160,8 @@ $(document).ready(function() {
             parent = null;
         }
         let newItem;
+
+        // Verify if its creating a new one or editing an item
         if (editId == null) {
             newItem = {
                 id: currentId,
@@ -161,9 +173,8 @@ $(document).ready(function() {
 
             treeViewObject.push(newItem);
             currentId++;
-
         } else {
-            let index = findItem(editId);
+            let index = findItemIndex(editId);
             if (index != null) {
                 treeViewObject[index].name = name;
                 treeViewObject[index].users = users;
@@ -171,6 +182,8 @@ $(document).ready(function() {
                 treeViewObject[index].parent = parent;
             }
         }
+
+        // Clear modal fields, Generate a new tree and update list in the select
         clearModalFields();
         generateTreeView();
         updateParentList();
@@ -184,8 +197,6 @@ $(document).ready(function() {
         $(".ui.modal").modal("hide"); 
     });
 
-    init();
-
     $('#root').on("click", "#icon_click", function(event){
         var par = $(event.target).parent();
         var className = $(event.target).attr("class");
@@ -193,6 +204,7 @@ $(document).ready(function() {
         let father_id = $(par).attr("id");
         let child_id = "#childs_" + father_id.split("_")[1];
 
+        // Change icon and hide/show children
         if (className === "plus square outline icon") {
             className = "minus square outline icon";
             $(par).find(child_id).show();
@@ -210,7 +222,7 @@ $(document).ready(function() {
         var grand_grand_parent = $(grand_parent).parent();
 
         let father_id = $(grand_grand_parent).attr("id");
-        let index = findItem(father_id.split("_")[1]);
+        let index = findItemIndex(father_id.split("_")[1]);
 
         let item = treeViewObject[index];
 
@@ -231,7 +243,7 @@ $(document).ready(function() {
         var grand_grand_parent = $(grand_parent).parent();
 
         let father_id = $(grand_grand_parent).attr("id");
-        let index = findItem(father_id.split("_")[1]);
+        let index = findItemIndex(father_id.split("_")[1]);
 
         let item = treeViewObject[index];
         
@@ -242,5 +254,6 @@ $(document).ready(function() {
         generateTreeView();
         updateParentList();
     });
-
+    
+    init();
 });
