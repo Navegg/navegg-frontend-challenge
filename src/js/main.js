@@ -1,4 +1,6 @@
 let treeViewObject;
+let currentId;
+let editId = null;
 
 function loadJSON() {
     return new Promise((resolve, reject) => {
@@ -11,7 +13,7 @@ function loadJSON() {
 async function init() {
     try {
         treeViewObject = await loadJSON();
-        console.log(treeViewObject);
+        currentId = treeViewObject.length + 1;
         generateTreeView();
         updateParentList();
     } catch(error) {
@@ -24,8 +26,8 @@ function generateListItem(treeViewItem) {
     innerHtml += "<i class=\"minus square outline icon\" id=\"icon_click\"></i>";
     innerHtml += "<div class=\"content\">";
     innerHtml += "<div class=\"header\">" + treeViewItem.name;
-    innerHtml += "<i class=\"pencil alternate icon\" id=\"icon_click\"></i>";
-    innerHtml += "<i class=\"trash icon\" id=\"icon_click\"></i>";
+    innerHtml += "<i class=\"pencil alternate icon\" id=\"icon_edit\"></i>";
+    innerHtml += "<i class=\"trash icon\" id=\"icon_delete\"></i>";
     innerHtml += "</div>";
     innerHtml += "<div class=\"description\"><b>Users:</b> " + treeViewItem.users + " - <b>Percent:</b> " + treeViewItem.percent + "</div>";
     innerHtml += "<div class=\"relaxed divided list\" id=\"childs_" + treeViewItem.id + "\"></div>";
@@ -62,6 +64,27 @@ function generateTreeView() {
 
         $(event.target).attr("class", className);
     });
+
+    $('#root').on("click", "#icon_edit", function(event){
+        var par = $(event.target).parent();
+        var grand_parent = $(par).parent();
+        var grand_grand_parent = $(grand_parent).parent();
+        var className = $(event.target).attr("class");
+
+        let father_id = $(grand_grand_parent).attr("id");
+        let index = parseInt(father_id.split("_")[1]);
+
+        let item = treeViewObject[index-1];
+
+        $("#name_field").val(item.name);
+        $("#parent_list").val(item.parent === null ? "" : item.parent);
+        $("#users_field").val(item.users);
+        $("#percent_field").val(item.percent);
+        
+        editId = item.id;
+
+        $(".ui.modal").modal("show");
+    });
 }
 
 function updateParentList() {
@@ -75,6 +98,15 @@ function clearModalFields() {
     users = $("#users_field").val("");
     percent = $("#percent_field").val("");
     parent = $("#parent_list").val("");
+}
+
+function findItem(idSearch) {
+    for (index in treeViewObject) {
+        if (treeViewObject[index].id === idSearch) {
+            return index;
+        }
+    }
+    return null;
 }
 
 function validateItem(name, users, percent) {
@@ -107,6 +139,7 @@ function validateItem(name, users, percent) {
 
 $(document).ready(function() {
     $("#create_new").click(function(event) {
+        editId = null;
         $(".ui.modal").modal("show"); 
     });
     
@@ -128,17 +161,28 @@ $(document).ready(function() {
         if (parent === "") {
             parent = null;
         }
+        let newItem;
+        if (editId == null) {
+            newItem = {
+                id: currentId,
+                name: name,
+                users: users,
+                percent: percent,
+                parent: parent
+            }
 
-        let newItem = {
-            id: treeViewObject.length,
-            name: name,
-            users: users,
-            percent: percent,
-            parent: parent
+            treeViewObject.push(newItem);
+            currentId++;
+
+        } else {
+            let index = findItem(editId);
+            if (index != null) {
+                treeViewObject[index].name = name;
+                treeViewObject[index].users = users;
+                treeViewObject[index].percent = percent;
+                treeViewObject[index].parent = parent;
+            }
         }
-
-        treeViewObject.push(newItem);
-        
         clearModalFields();
         generateTreeView();
         updateParentList();
