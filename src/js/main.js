@@ -23,8 +23,12 @@ function generateListItem(treeViewItem) {
     innerHtml = "<div class=\"item\" id=\"parent_" + treeViewItem.id + "\">";
     innerHtml += "<i class=\"minus square outline icon\" id=\"icon_click\"></i>";
     innerHtml += "<div class=\"content\">";
-    innerHtml += "<div class=\"header\">" + treeViewItem.name  + " - " + treeViewItem.users + " - " + treeViewItem.percent + "</div>";
-    innerHtml += "<div class=\"list\" id=\"childs_" + treeViewItem.id + "\"></div>";
+    innerHtml += "<div class=\"header\">" + treeViewItem.name;
+    innerHtml += "<i class=\"pencil alternate icon\" id=\"icon_click\"></i>";
+    innerHtml += "<i class=\"trash icon\" id=\"icon_click\"></i>";
+    innerHtml += "</div>";
+    innerHtml += "<div class=\"description\"><b>Users:</b> " + treeViewItem.users + " - <b>Percent:</b> " + treeViewItem.percent + "</div>";
+    innerHtml += "<div class=\"relaxed divided list\" id=\"childs_" + treeViewItem.id + "\"></div>";
     innerHtml += "</div>";
     innerHtml += "</div>";
 
@@ -32,7 +36,7 @@ function generateListItem(treeViewItem) {
 }
 
 function generateTreeView() {
-    $("#root").html("<div class=\"ui list\" id=\"treeview\"></div>")
+    $("#root").html("<div class=\"ui relaxed divided list\" id=\"treeview\"></div>")
     for (index in treeViewObject) {
         if (treeViewObject[index].parent == null) {
             $("#treeview").append(generateListItem(treeViewObject[index]));
