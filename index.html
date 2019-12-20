@@ -6,10 +6,41 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
 			integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 			crossorigin="anonymous"></script>
-    <script src="lib/js/main.js"></script>
+    <script src="src/js/main.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
 </head>
 <body>
+    <button id="create_new" class="ui button">
+        Create
+    </button>
+    <div class="ui modal">
+        <div class="header">Create Item</div>
+        <div class="content">
+            <form class="ui form" id="new_item">
+                <div class="field">
+                    <label>Name</label>
+                    <input id="name_field" type="text" name="name" placeholder="Name">
+                </div>
+                <div class="field">
+                    <label>Users</label>
+                    <input id="users_field" type="text" name="users" placeholder="Users">
+                </div>
+                <div class="field">
+                    <label>Percent</label>
+                    <input id="percent_field" type="text" name="percent" placeholder="Percent">
+                </div>
+                <div class="field">
+                    <label>Parent</label>
+                    <select class="ui fluid dropdown" id="parent_list">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <button class="ui primary button" type="submit" id="submit_button">Save</button>
+                <button class="ui button" id="cancel_button">Cancel</button>
+            </form>
+        </div>
+    </div>
     <div class="ui container">
         <div id="root">
         </div>

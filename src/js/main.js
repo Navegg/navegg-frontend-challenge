@@ -11,7 +11,9 @@ function loadJSON() {
 async function init() {
     try {
         treeViewObject = await loadJSON();
+        console.log(treeViewObject);
         generateTreeView();
+        updateParentList();
     } catch(error) {
         console.error(error);
     }
@@ -58,8 +60,95 @@ function generateTreeView() {
     });
 }
 
+function updateParentList() {
+    for (index in treeViewObject) {
+        $("#parent_list").append("<option value=\"" + treeViewObject[index].id + "\">" + treeViewObject[index].name + "</option>");
+    }
+}
 
+function clearModalFields() {
+    name = $("#name_field").val("");
+    users = $("#users_field").val("");
+    percent = $("#percent_field").val("");
+    parent = $("#parent_list").val("");
+}
+
+function validateItem(name, users, percent) {
+    if (name === "") {
+        alert("Name cannot be empty");
+        return false;
+    }
+    if (users === "") {
+        alert("Users cannot be empty");
+        return false;
+    }
+
+    if (percent === "") {
+        alert("Percent cannot be empty");
+        return false;
+    }
+
+    if (isNaN(parseFloat(users))) {
+        alert("Users must be a number");
+        return false;
+    }
+
+    if (isNaN(parseFloat(percent))) {
+        alert("Percent must be a number");
+        return false;
+    }
+
+    return true;
+}
 
 $(document).ready(function() {
+    $("#create_new").click(function(event) {
+        $(".ui.modal").modal("show"); 
+    });
+    
+    $("#submit_button").click(function(event) {
+        event.preventDefault();
+
+        name = $("#name_field").val();
+        users = $("#users_field").val();
+        percent = $("#percent_field").val();
+        parent = $("#parent_list").val();
+        
+        if (!validateItem(name, users, percent)) {
+            return;
+        }
+
+        users = parseFloat(users);
+        percent = parseFloat(percent);
+
+        if (parent === "") {
+            parent = null;
+        }
+
+        let newItem = {
+            id: treeViewObject.length,
+            name: name,
+            users: users,
+            percent: percent,
+            parent: parent
+        }
+
+        treeViewObject.push(newItem);
+        
+        clearModalFields();
+        generateTreeView();
+        updateParentList();
+        
+        $(".ui.modal").modal("hide"); 
+    });
+    
+    $("#cancel_button").click(function(event) {
+        event.preventDefault();
+        clearModalFields();
+        $(".ui.modal").modal("hide"); 
+    });
+
     init();
+
+
 });
