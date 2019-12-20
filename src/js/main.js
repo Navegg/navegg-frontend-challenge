@@ -26,10 +26,10 @@ function generateListItem(treeViewItem) {
     innerHtml += "<i class=\"minus square outline icon\" id=\"icon_click\"></i>";
     innerHtml += "<div class=\"content\">";
     innerHtml += "<div class=\"header\">" + treeViewItem.name;
-    innerHtml += "<i class=\"pencil alternate icon\" id=\"icon_edit\"></i>";
-    innerHtml += "<i class=\"trash icon\" id=\"icon_delete\"></i>";
+    innerHtml += "<i style=\"margin-left: 30px;\" class=\"pencil alternate icon\" id=\"icon_edit\"></i>";
+    innerHtml += "<i style=\"margin-left: 10px;\" class=\"trash icon\" id=\"icon_delete\"></i>";
     innerHtml += "</div>";
-    innerHtml += "<div class=\"description\"><b>Users:</b> " + treeViewItem.users + " - <b>Percent:</b> " + treeViewItem.percent + "</div>";
+    innerHtml += "<div class=\"description\"><b>Users:</b> " + treeViewItem.users + " - <b>Percent:</b> " + treeViewItem.percent +  " - <b>Status:</b> " + treeViewItem.status +"</div>";
     innerHtml += "<div class=\"relaxed divided list\" id=\"childs_" + treeViewItem.id + "\"></div>";
     innerHtml += "</div>";
     innerHtml += "</div>";
@@ -47,49 +47,37 @@ function generateTreeView() {
             $(tag_parent).append(generateListItem(treeViewObject[index]));
         }
     }
-    $('#root').on("click", "#icon_click", function(event){
-        var par = $(event.target).parent();
-        var className = $(event.target).attr("class");
+}
 
-        let father_id = $(par).attr("id");
-        let child_id = "#childs_" + father_id.split("_")[1];
-
-        if (className === "plus square outline icon") {
-            className = "minus square outline icon";
-            $(par).find(child_id).show();
-        } else {
-            className = "plus square outline icon";
-            $(par).find(child_id).hide();
-        }
-
-        $(event.target).attr("class", className);
-    });
-
-    $('#root').on("click", "#icon_edit", function(event){
-        var par = $(event.target).parent();
-        var grand_parent = $(par).parent();
-        var grand_grand_parent = $(grand_parent).parent();
-        var className = $(event.target).attr("class");
-
-        let father_id = $(grand_grand_parent).attr("id");
-        let index = parseInt(father_id.split("_")[1]);
-
-        let item = treeViewObject[index-1];
-
-        $("#name_field").val(item.name);
-        $("#parent_list").val(item.parent === null ? "" : item.parent);
-        $("#users_field").val(item.users);
-        $("#percent_field").val(item.percent);
-        
-        editId = item.id;
-
-        $(".ui.modal").modal("show");
+function itemRemove(array, element) {
+    return array.filter(function(ele) {
+        return ele.id != element;
     });
 }
 
 function updateParentList() {
+    $("#parent_list").html("<option value=\"\"></option>");
     for (index in treeViewObject) {
         $("#parent_list").append("<option value=\"" + treeViewObject[index].id + "\">" + treeViewObject[index].name + "</option>");
+    }
+}
+
+function removeChildren(itemId) {
+    let parentList = [];
+    parentList.push(itemId);
+
+    while (parentList.length > 0) {
+        currentItem = parentList[0];
+        for (index in treeViewObject) {
+            if (parseInt(treeViewObject[index].parent) === parseInt(currentItem)) {
+                parentList.push(treeViewObject[index].id);
+            }
+        }
+
+        for (index in parentList) {
+            treeViewObject = itemRemove(treeViewObject, parentList[index]);
+        }
+        parentList.shift();
     }
 }
 
@@ -102,7 +90,7 @@ function clearModalFields() {
 
 function findItem(idSearch) {
     for (index in treeViewObject) {
-        if (treeViewObject[index].id === idSearch) {
+        if (parseInt(treeViewObject[index].id) === parseInt(idSearch)) {
             return index;
         }
     }
@@ -198,5 +186,61 @@ $(document).ready(function() {
 
     init();
 
+    $('#root').on("click", "#icon_click", function(event){
+        var par = $(event.target).parent();
+        var className = $(event.target).attr("class");
+
+        let father_id = $(par).attr("id");
+        let child_id = "#childs_" + father_id.split("_")[1];
+
+        if (className === "plus square outline icon") {
+            className = "minus square outline icon";
+            $(par).find(child_id).show();
+        } else {
+            className = "plus square outline icon";
+            $(par).find(child_id).hide();
+        }
+
+        $(event.target).attr("class", className);
+    });
+
+    $('#root').on("click", "#icon_edit", function(event){
+        var par = $(event.target).parent();
+        var grand_parent = $(par).parent();
+        var grand_grand_parent = $(grand_parent).parent();
+
+        let father_id = $(grand_grand_parent).attr("id");
+        let index = findItem(father_id.split("_")[1]);
+
+        let item = treeViewObject[index];
+
+        $("#name_field").val(item.name);
+        $("#parent_list").val(item.parent === null ? "" : item.parent);
+        $("#users_field").val(item.users);
+        $("#percent_field").val(item.percent);
+        
+        editId = item.id;
+
+        $(".ui.modal").modal("show");
+    });
+
+    $('#root').on("click", "#icon_delete", function(event){
+        if (!confirm('Are you sure?')) return false;
+        var par = $(event.target).parent();
+        var grand_parent = $(par).parent();
+        var grand_grand_parent = $(grand_parent).parent();
+
+        let father_id = $(grand_grand_parent).attr("id");
+        let index = findItem(father_id.split("_")[1]);
+
+        let item = treeViewObject[index];
+        
+        treeViewObject = itemRemove(treeViewObject, item.id);
+
+        removeChildren(item.id);
+
+        generateTreeView();
+        updateParentList();
+    });
 
 });
