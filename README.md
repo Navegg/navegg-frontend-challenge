@@ -23,3 +23,4 @@ http://localhost:8000/index.html
 ## What you would add/change if you had more time?
 - Improve style
 - Persist changes
+- Attempt to change code for Angular
